@@ -1,0 +1,114 @@
+[
+  {
+    "id": "run",
+    "name": "Running",
+    "category": "cardio",
+    "avgCaloriesPerMin": 10,
+    "description": "Outdoor or treadmill running"
+  },
+  {
+    "id": "cycle",
+    "name": "Cycling",
+    "category": "cardio",
+    "avgCaloriesPerMin": 8,
+    "description": "Road cycling or stationary bike"
+  },
+  {
+    "id": "swim",
+    "name": "Swimming",
+    "category": "cardio",
+    "avgCaloriesPerMin": 11,
+    "description": "Lap swimming"
+  },
+  {
+    "id": "walk",
+    "name": "Walking",
+    "category": "cardio",
+    "avgCaloriesPerMin": 4,
+    "description": "Brisk walking or hiking"
+  },
+  {
+    "id": "jump-rope",
+    "name": "Jump Rope",
+    "category": "cardio",
+    "avgCaloriesPerMin": 12,
+    "description": "Skipping rope"
+  },
+  {
+    "id": "rowing",
+    "name": "Rowing",
+    "category": "cardio",
+    "avgCaloriesPerMin": 9,
+    "description": "Rowing machine or water rowing"
+  },
+  {
+    "id": "weights",
+    "name": "Weight Training",
+    "category": "strength",
+    "avgCaloriesPerMin": 6,
+    "description": "Free weights or machines"
+  },
+  {
+    "id": "bodyweight",
+    "name": "Bodyweight Exercises",
+    "category": "strength",
+    "avgCaloriesPerMin": 5,
+    "description": "Push-ups, pull-ups, squats, etc."
+  },
+  {
+    "id": "crossfit",
+    "name": "CrossFit",
+    "category": "strength",
+    "avgCaloriesPerMin": 9,
+    "description": "High-intensity functional fitness"
+  },
+  {
+    "id": "yoga",
+    "name": "Yoga",
+    "category": "flexibility",
+    "avgCaloriesPerMin": 3,
+    "description": "Various yoga styles"
+  },
+  {
+    "id": "pilates",
+    "name": "Pilates",
+    "category": "flexibility",
+    "avgCaloriesPerMin": 4,
+    "description": "Core strengthening and flexibility"
+  },
+  {
+    "id": "stretch",
+    "name": "Stretching",
+    "category": "flexibility",
+    "avgCaloriesPerMin": 2,
+    "description": "Static or dynamic stretching"
+  },
+  {
+    "id": "basketball",
+    "name": "Basketball",
+    "category": "sports",
+    "avgCaloriesPerMin": 8,
+    "description": "Full court or half court"
+  },
+  {
+    "id": "soccer",
+    "name": "Soccer",
+    "category": "sports",
+    "avgCaloriesPerMin": 9,
+    "description": "Football/soccer match or practice"
+  },
+  {
+    "id": "tennis",
+    "name": "Tennis",
+    "category": "sports",
+    "avgCaloriesPerMin": 7,
+    "description": "Singles or doubles tennis"
+  },
+  {
+    "id": "boxing",
+    "name": "Boxing",
+    "category": "sports",
+    "avgCaloriesPerMin": 10,
+    "description": "Boxing training or sparring"
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "name": "@repo/seeding",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "seed": "tsx src/index.ts",
+    "seed:activities": "tsx src/seeders/activities.seeder.ts",
+    "seed:users": "tsx src/seeders/users.seeder.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/shared": "workspace:*",
+    "firebase-admin": "^12.0.0"
+  },
+  "devDependencies": {
+    "@repo/config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "tsx": "^4.7.0",
+    "typescript": "5.5.4"
+  }
+}

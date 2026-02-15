@@ -1,0 +1,124 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================================================
+    // HELPER FUNCTIONS
+    // ============================================================================
+
+    /**
+     * Check if user is authenticated
+     */
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    /**
+     * Check if user is the owner of the resource
+     */
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    /**
+     * Check if user has admin role
+     */
+    function isAdmin() {
+      return isAuthenticated() &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    /**
+     * Validate required fields exist in the data
+     */
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    /**
+     * Check if the field value hasn't changed
+     */
+    function unchangedField(field) {
+      return request.resource.data[field] == resource.data[field];
+    }
+
+    // ============================================================================
+    // COLLECTION RULES
+    // ============================================================================
+
+    /**
+     * USERS COLLECTION
+     * Users can read and update their own profile
+     */
+    match /users/{userId} {
+      // Allow read if authenticated and owner
+      allow read: if isOwner(userId);
+
+      // Allow create if authenticated and creating own profile
+      allow create: if isAuthenticated()
+                    && request.auth.uid == userId
+                    && hasRequiredFields(['uid', 'email'])
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.email == request.auth.token.email;
+
+      // Allow update if owner and not changing protected fields
+      allow update: if isOwner(userId)
+                    && unchangedField('uid')
+                    && unchangedField('email')
+                    && unchangedField('role');
+
+      // Never allow delete (soft delete via backend only)
+      allow delete: if false;
+    }
+
+    /**
+     * WORKOUTS COLLECTION
+     * Users can CRUD their own workouts
+     */
+    match /workouts/{workoutId} {
+      // Allow read if owner
+      allow read: if isOwner(resource.data.userId);
+
+      // Allow create if authenticated and setting self as userId
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid
+                    && hasRequiredFields(['userId', 'activityId', 'activityName', 'duration', 'caloriesBurned', 'date'])
+                    && request.resource.data.duration > 0
+                    && request.resource.data.duration <= 1440
+                    && request.resource.data.caloriesBurned >= 0;
+
+      // Allow update if owner and not changing userId
+      allow update: if isOwner(resource.data.userId)
+                    && unchangedField('userId')
+                    && request.resource.data.duration > 0
+                    && request.resource.data.duration <= 1440
+                    && request.resource.data.caloriesBurned >= 0;
+
+      // Allow delete if owner
+      allow delete: if isOwner(resource.data.userId);
+    }
+
+    /**
+     * ACTIVITIES COLLECTION
+     * Read-only for authenticated users
+     * Only admins can write (via backend)
+     */
+    match /activities/{activityId} {
+      // Anyone authenticated can read activities
+      allow read: if isAuthenticated();
+
+      // Only admins can create/update/delete activities
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============================================================================
+    // DEFAULT DENY
+    // ============================================================================
+
+    // Deny all other requests by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
