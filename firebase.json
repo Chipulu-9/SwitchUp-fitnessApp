@@ -13,11 +13,13 @@
         "firebase-debug.log",
         "firebase-debug.*.log"
       ],
-      "predeploy": ["pnpm --filter @repo/functions build"]
+      "predeploy": [
+        "pnpm --filter @repo/functions build"
+      ]
     }
   ],
   "hosting": {
-    "public": "apps/web/dist",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -27,17 +29,6 @@
       {
         "source": "**",
         "destination": "/index.html"
-      }
-    ],
-    "headers": [
-      {
-        "source": "**/*.@(js|css)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=31536000"
-          }
-        ]
       }
     ]
   },

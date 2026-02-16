@@ -2,16 +2,17 @@ import type { Workout } from '@repo/shared'
 import { Card, CardHeader, CardTitle, CardContent } from '@repo/ui/Card'
 import { formatDuration } from '@repo/shared'
 import { Activity, Calendar, Flame, TrendingUp, Award, Clock } from 'lucide-react'
+import { InsightsSection } from './insights/InsightsSection'
+import { GoalsSection } from '../goals/GoalsSection'
 
 interface DashboardProps {
   workouts: Workout[]
+  weeklyGoal?: number
+  calorieGoal?: number
+  onUpdateGoals?: (goals: { weeklyGoal: number; calorieGoal: number }) => Promise<void>
 }
 
-/**
- * Dashboard Component
- * Displays workout statistics and progress overview
- */
-export function Dashboard({ workouts }: DashboardProps) {
+export function Dashboard({ workouts, weeklyGoal = 3, calorieGoal = 0, onUpdateGoals }: DashboardProps) {
   // Calculate statistics
   const totalWorkouts = workouts.length
   const totalDuration = workouts.reduce((sum, w) => sum + w.duration, 0)
@@ -22,25 +23,14 @@ export function Dashboard({ workouts }: DashboardProps) {
   const weekStart = new Date(now.setDate(now.getDate() - now.getDay()))
   weekStart.setHours(0, 0, 0, 0)
 
-  console.log('Dashboard: Week start date:', weekStart.toISOString())
-  console.log('Dashboard: Total workouts to filter:', workouts.length)
-
   const thisWeekWorkouts = workouts.filter(w => {
     const workoutDate = new Date(w.date)
-    const isThisWeek = workoutDate >= weekStart
-    console.log(
-      `Workout ${w.activityName} on ${workoutDate.toISOString()} is ${isThisWeek ? 'IN' : 'NOT IN'} this week`
-    )
-    return isThisWeek
+    return workoutDate >= weekStart
   })
-
-  console.log('Dashboard: This week workouts:', thisWeekWorkouts.length)
 
   const weeklyWorkouts = thisWeekWorkouts.length
   const weeklyDuration = thisWeekWorkouts.reduce((sum, w) => sum + w.duration, 0)
   const weeklyCalories = thisWeekWorkouts.reduce((sum, w) => sum + w.caloriesBurned, 0)
-
-  console.log('Dashboard: Weekly stats -', { weeklyWorkouts, weeklyDuration, weeklyCalories })
 
   // Calculate current streak (consecutive days with workouts)
   const sortedDates = [...new Set(workouts.map(w => new Date(w.date).toDateString()))].sort(
@@ -76,6 +66,8 @@ export function Dashboard({ workouts }: DashboardProps) {
   const topActivities = Object.entries(activityCounts)
     .sort(([, a], [, b]) => b - a)
     .slice(0, 3)
+
+  const handleUpdateGoals = onUpdateGoals || (async () => {})
 
   return (
     <div className="space-y-6">
@@ -214,12 +206,23 @@ export function Dashboard({ workouts }: DashboardProps) {
               <Flame className="w-12 h-12 text-orange-500 animate-pulse" />
             </div>
             <p className="text-2xl font-bold text-gray-900 mb-2">
-              🎉 Amazing! You're on a {currentStreak}-day streak! 🎉
+              Amazing! You're on a {currentStreak}-day streak!
             </p>
             <p className="text-gray-700 text-lg">Keep up the great work and stay consistent!</p>
           </CardContent>
         </Card>
       ) : null}
+
+      {/* Performance Insights */}
+      <InsightsSection workouts={workouts} weeklyGoal={weeklyGoal} />
+
+      {/* Goals & Progress */}
+      <GoalsSection
+        workouts={workouts}
+        weeklyGoal={weeklyGoal}
+        calorieGoal={calorieGoal}
+        onUpdateGoals={handleUpdateGoals}
+      />
     </div>
   )
 }
